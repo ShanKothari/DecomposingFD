@@ -28,7 +28,8 @@ FTD<-function(tdmat,q=1,abund=F,weights=NULL){
   }
   
   if(max(tdmat)>1 || min(tdmat)<0){
-    stop("distances must be between 0 and 1")
+    tdmat<-(tdmat-min(tdmat))/(max(tdmat)-min(tdmat))
+    warning("trait distances must be between 0 and 1; rescaling")
   }
   
   ## if abund=T but no weights are provided, abundances are assumed equal
@@ -65,7 +66,7 @@ FTD<-function(tdmat,q=1,abund=F,weights=NULL){
   }
   
   ## getting qDT, qDTM, and Et from Ht
-  qDT<-((1+(1+4*Ht)^(.5))/2)
+  qDT<-(1+sqrt(1+4*Ht))/2
   qDTM<-1+qDT*M
   Et<-qDT/nsp
   
