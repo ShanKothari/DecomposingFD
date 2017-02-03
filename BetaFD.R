@@ -17,7 +17,7 @@ comm.disp<-function(tdmat,com1,com2){
   return(disp)
 }
 
-## note: this occasionally yields negative values
+## note: the above occasionally yields negative values
 ## even when using distances like Euclidean or Manhattan distance
 ## Scheiner et al. claim this is impossible (Appendix, Dispersion of Communities)
 ## due to concavity -- I suspect that it is, in fact, possible
@@ -30,4 +30,18 @@ multicomm.disp<-function(tdmat,spmat){
   MB<-(sum(disp.mat)/sum(spmat>0)^2)*nrow(spmat)/(nrow(spmat)-1)
   disp.list<-list(disp.mat,MB)
   return(disp.list)
+}
+
+FTD.beta<-function(tdmat,spmat,q=1){
+  disp.mat<-outer(1:nrow(spmat),1:nrow(spmat),FUN=Vectorize(function(i,j) comm.disp(tdmat,com1=spmat[i,],com2=spmat[j,])[[1]]))
+  fAB<-disp.mat/sum(disp.mat)
+  if(q==1){
+    fABlog<-fAB*log(fAB)
+    fABlog[is.na(fABlog)]<-0
+    Ht.beta<-exp(-1*sum(fABlog))
+  } else {
+    Ht.beta<-sum(fAB^q)^(1/(1-q))
+  }
+  qDT.beta<-(1+sqrt(1+4*Ht.beta))/2
+  Et.beta<-qDT.beta/nrow(spmat)
 }

@@ -106,6 +106,6 @@ FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
 }
 
 ## to consider:
-## beta-diversity -- check for negative values in between-community distances, give warning
+## calculating mean dispersion, diversity across a set of communities
 ## structured vs. unstructured gamma-diversity
 ## null models -- pick S species, examine functional diversity, iterate
