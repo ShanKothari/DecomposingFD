@@ -1,5 +1,6 @@
 ## in progress!
 ## beginnings of scripts to calculate Scheiner's functional beta-diversity
+## in general, these cannot be abundance-weighted (yet)
 
 ## measuring the dispersion between two communities
 ## based on presence/absence
