@@ -12,9 +12,7 @@ comm.disp<-function(tdmat,com1,com2){
   nsp.com1<-sum(com1>0)
   nsp.com2<-sum(com2>0)
   dmAB<-mAB-(nsp.com1*mAA+nsp.com2*mBB)/(nsp.com1+nsp.com2)
-  dmAB.weight<-dmAB*nsp.com1*nsp.com2
-  disp<-list(dmAB,dmAB.weight)
-  return(disp)
+  return(dmAB)
 }
 
 ## note: the above occasionally yields negative values
@@ -23,17 +21,14 @@ comm.disp<-function(tdmat,com1,com2){
 ## due to concavity -- I suspect that it is, in fact, possible
 ## and concavity does not apply
 
-## measuring the dispersion among a set of communities
-## wraps the above across a communities x species matrix
-multicomm.disp<-function(tdmat,spmat){
-  disp.mat<-outer(1:nrow(spmat),1:nrow(spmat),FUN=Vectorize(function(i,j) comm.disp(tdmat,com1=spmat[i,],com2=spmat[j,])[[2]]))
-  MB<-(sum(disp.mat)/sum(spmat>0)^2)*nrow(spmat)/(nrow(spmat)-1)
-  disp.list<-list(disp.mat,MB)
-  return(disp.list)
-}
-
 FTD.beta<-function(tdmat,spmat,q=1){
-  disp.mat<-outer(1:nrow(spmat),1:nrow(spmat),FUN=Vectorize(function(i,j) comm.disp(tdmat,com1=spmat[i,],com2=spmat[j,])[[1]]))
+  n.comm<-nrow(spmat)
+  disp.mat<-outer(1:n.comm,1:n.comm,FUN=Vectorize(function(i,j) comm.disp(tdmat,com1=spmat[i,],com2=spmat[j,])))
+
+  nsp.comm<-rowSums(spmat>0)
+  disp.mat.weight<-diag(nsp.comm) %*% disp.mat %*% diag(nsp.comm)
+  M.beta<-sum(disp.mat.weight)/sum(spmat>0)^2
+  
   fAB<-disp.mat/sum(disp.mat)
   if(q==1){
     fABlog<-fAB*log(fAB)
@@ -43,5 +38,8 @@ FTD.beta<-function(tdmat,spmat,q=1){
     Ht.beta<-sum(fAB^q)^(1/(1-q))
   }
   qDT.beta<-(1+sqrt(1+4*Ht.beta))/2
-  Et.beta<-qDT.beta/nrow(spmat)
+  qDTM.beta<-1+qDT.beta*M.beta
+  Et.beta<-qDT.beta/n.comm
+  
+  list(n.comm=n.comm,q=q,M.beta=M.beta,Ht.beta=Ht.beta,qDT.beta=qDT.beta,qDTM.beta=qDTM.beta)
 }
