@@ -83,6 +83,7 @@ FTD<-function(tdmat,q=1,abund=F,weights=NULL){
 
 FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
   
+  n.comm<-nrow(spmat)
   if(match.names==T){
     sp.arr<-match(rownames(as.matrix(tdmat)),colnames(spmat))
     spmat<-spmat[,sp.arr]
@@ -102,10 +103,29 @@ FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
   out<-apply(spmat,1,function(x) select.FTD(tdmat=tdmat,spvec=x,q=q,abund=abund))
   df.out<-data.frame(t(out))
   rownames(df.out)<-rownames(spmat)
-  return(df.out)
+  
+  ## calculate mean richness, dispersion, evenness, FTD
+  u.M<-(df.out$nsp*df.out$M)/sum(df.out$nsp)
+  if(q==1){
+    ## geometric mean -- limit of generalized mean as q->1
+    u.nsp<-prod(df.out$nsp)^(1/n.comm)
+    u.qDT<-prod(dr.out$qDT)^(1/n.comm)
+  } else {
+    ## generalized mean with m=1-q
+    u.nsp<-(sum(df.out$nsp^(1-q))/n.comm)^1/(1-q)
+    u.qDT<-(sum(df.out$qDT^(1-q))/n.comm)^1/(1-q)
+  }
+  
+  ## calculate mean FTD and evenness
+  u.qDTM<-1+u.qDT*u.M
+  u.Et<-u.qDT/u.nsp
+  
+  ## list more things
+  list(com.FTD=df.out,u.nsp=u.nsp,u.M=u.M,u.Et=u.Et,u.qDT=u.qDT,u.qDTM=u.qDTM)
 }
 
 ## to consider:
 ## calculating mean dispersion, diversity across a set of communities
+## change to output standardized M rather than normal
 ## structured vs. unstructured gamma-diversity
 ## null models -- pick S species, examine functional diversity, iterate
