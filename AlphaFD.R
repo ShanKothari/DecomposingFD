@@ -41,7 +41,8 @@ FTD<-function(tdmat,q=1,abund=F,weights=NULL){
   }
   
   if(all.equal(sum(weights),1)==F){
-    warning("proportional abundances do not sum to 1")
+    weights<-weights/sum(weights)
+    warning("input proportional abundances do not sum to 1; summation to 1 forced")
   }
   
   nsp<-nrow(tdmat)
@@ -89,7 +90,7 @@ FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
     spmat<-spmat[,sp.arr]
   }
   
-  ## define a function to apply FTD to a subsetted distance matrix
+  ## define an internal function to apply FTD to a subsetted distance matrix
   select.FTD<-function(tdmat,spvec,q,abund){
     sp<-which(as.logical(spvec))
     tdmat.comm<-as.matrix(tdmat)[sp,sp]
@@ -125,7 +126,5 @@ FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
 }
 
 ## to consider:
-## calculating mean dispersion, diversity across a set of communities
 ## change to output standardized M rather than normal
 ## structured vs. unstructured gamma-diversity
-## null models -- pick S species, examine functional diversity, iterate
