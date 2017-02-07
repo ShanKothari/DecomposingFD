@@ -104,13 +104,17 @@ FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
   out<-apply(spmat,1,function(x) select.FTD(tdmat=tdmat,spvec=x,q=q,abund=abund))
   df.out<-data.frame(t(out))
   rownames(df.out)<-rownames(spmat)
+  ## warning for zero-species communities
+  if(sum(df.out$nsp==0)>0){
+    warning("at least one community has no species")
+  }
   
   ## calculate mean richness, dispersion, evenness, FTD
   u.M<-(df.out$nsp*df.out$M)/sum(df.out$nsp)
   if(q==1){
     ## geometric mean -- limit of generalized mean as q->1
     u.nsp<-prod(df.out$nsp)^(1/n.comm)
-    u.qDT<-prod(dr.out$qDT)^(1/n.comm)
+    u.qDT<-prod(df.out$qDT)^(1/n.comm)
   } else {
     ## generalized mean with m=1-q
     u.nsp<-(sum(df.out$nsp^(1-q))/n.comm)^1/(1-q)
