@@ -12,7 +12,7 @@ comm.disp<-function(tdmat,com1,com2){
   mBB<-mean(tdmat[com2>0,com2>0])
   nsp.com1<-sum(com1>0)
   nsp.com2<-sum(com2>0)
-  dmAB<-mAB-(nsp.com1*mAA+nsp.com2*mBB)/(nsp.com1+nsp.com2)
+  dmAB<-mAB-(mAA+mBB)/2
   return(dmAB)
 }
 
