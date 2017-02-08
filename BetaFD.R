@@ -42,5 +42,5 @@ FTD.beta<-function(tdmat,spmat,q=1){
   qDTM.beta<-1+qDT.beta*M.beta
   Et.beta<-qDT.beta/n.comm
   
-  list(n.comm=n.comm,q=q,M.beta=M.beta,Ht.beta=Ht.beta,qDT.beta=qDT.beta,qDTM.beta=qDTM.beta)
+  list(n.comm=n.comm,q=q,M.beta=M.beta,Ht.beta=Ht.beta,qDT.beta=qDT.beta,qDTM.beta=qDTM.beta,disp.mat=disp.mat)
 }
