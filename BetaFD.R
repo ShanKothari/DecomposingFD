@@ -10,8 +10,6 @@ comm.disp<-function(tdmat,com1,com2){
   ## correction so that dispersion=0 if communities have the same species
   mAA<-mean(tdmat[com1>0,com1>0])
   mBB<-mean(tdmat[com2>0,com2>0])
-  nsp.com1<-sum(com1>0)
-  nsp.com2<-sum(com2>0)
   dmAB<-mAB-(mAA+mBB)/2
   return(dmAB)
 }
