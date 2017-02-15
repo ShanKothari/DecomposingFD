@@ -1,7 +1,3 @@
-## in progress!
-## beginnings of scripts to calculate Scheiner's functional beta-diversity
-## in general, these cannot be abundance-weighted (yet)
-
 ## measuring the dispersion between two communities
 ## based on presence/absence
 comm.disp<-function(tdmat,com1,com2){
@@ -13,12 +9,6 @@ comm.disp<-function(tdmat,com1,com2){
   dmAB<-mAB-(mAA+mBB)/2
   return(dmAB)
 }
-
-## note: the above occasionally yields negative values
-## even when using distances like Euclidean or Manhattan distance
-## Scheiner et al. claim this is impossible (Appendix, Dispersion of Communities)
-## due to concavity -- I suspect that it is, in fact, possible
-## and concavity does not apply
 
 FTD.beta<-function(tdmat,spmat,q=1){
   n.comm<-nrow(spmat)
