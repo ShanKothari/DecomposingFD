@@ -51,6 +51,7 @@ FTD.beta<-function(tdmat,spmat,q=1){
   n.comm<-nrow(spmat)
   disp.mat.weight<-comm.disp.mat(tdmat,spmat,weighted=T)
   M.beta<-sum(disp.mat.weight)/sum(spmat>0)^2
+  M.beta.prime<-M.beta*n.comm/(n.comm-1)
   
   fAB<-disp.mat/sum(disp.mat)
   if(q==1){
@@ -64,5 +65,5 @@ FTD.beta<-function(tdmat,spmat,q=1){
   qDTM.beta<-1+qDT.beta*M.beta
   Et.beta<-qDT.beta/n.comm
   
-  list(n.comm=n.comm,q=q,M.beta=M.beta,Ht.beta=Ht.beta,qDT.beta=qDT.beta,qDTM.beta=qDTM.beta,disp.mat=disp.mat)
+  list(n.comm=n.comm,q=q,M.beta.prime=M.beta.prime,Ht.beta=Ht.beta,qDT.beta=qDT.beta,qDTM.beta=qDTM.beta,disp.mat=disp.mat)
 }
