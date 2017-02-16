@@ -52,6 +52,7 @@ FTD<-function(tdmat,q=1,abund=F,weights=NULL){
   dijsum<-sum(tdmat.abund)
   ## calculates Scheiner's M (if abund=F) or Rao's Q (if abund=T)
   M<-dijsum/nsp^(2*(1-abund))
+  M.prime<-M*nsp/(nsp-1)
   fij<-tdmat.abund/dijsum
   
   ## calculating qH
@@ -71,7 +72,7 @@ FTD<-function(tdmat,q=1,abund=F,weights=NULL){
   qDTM<-1+qDT*M
   Et<-qDT/nsp
   
-  list(nsp=nsp,q=q,M=M,Ht=Ht,Et=Et,qDT=qDT,qDTM=qDTM)
+  list(nsp=nsp,q=q,M.prime=M.prime,Ht=Ht,Et=Et,qDT=qDT,qDTM=qDTM)
 }
 
 ## wrapper for the above function across multiple communities
@@ -111,22 +112,23 @@ FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
   
   ## calculate mean richness, dispersion, evenness, FTD
   u.M<-sum(df.out$nsp*df.out$M)/sum(df.out$nsp)
+  u.nsp<-mean(df.out$nsp)
+  ## to do: check if u.nsp is always calculated as arithmetic mean
   if(q==1){
     ## geometric mean -- limit of generalized mean as q->1
-    u.nsp<-prod(df.out$nsp)^(1/n.comm)
     u.qDT<-prod(df.out$qDT)^(1/n.comm)
   } else {
     ## generalized mean with m=1-q
-    u.nsp<-(sum(df.out$nsp^(1-q))/n.comm)^1/(1-q)
     u.qDT<-(sum(df.out$qDT^(1-q))/n.comm)^1/(1-q)
   }
+  u.M.prime<-u.M*u.nsp/(u.nsp-1)
   
   ## calculate mean FTD and evenness
   u.qDTM<-1+u.qDT*u.M
   u.Et<-u.qDT/u.nsp
   
   ## list more things
-  list(com.FTD=df.out,u.nsp=u.nsp,u.M=u.M,u.Et=u.Et,u.qDT=u.qDT,u.qDTM=u.qDTM)
+  list(com.FTD=df.out,u.nsp=u.nsp,u.M.prime=u.M.prime,u.Et=u.Et,u.qDT=u.qDT,u.qDTM=u.qDTM)
 }
 
 ## to consider:
