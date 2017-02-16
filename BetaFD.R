@@ -10,12 +10,46 @@ comm.disp<-function(tdmat,com1,com2){
   return(dmAB)
 }
 
-FTD.beta<-function(tdmat,spmat,q=1){
+comm.disp.mat<-function(tdmat,spmat,weighted=FALSE){
   n.comm<-nrow(spmat)
   disp.mat<-outer(1:n.comm,1:n.comm,FUN=Vectorize(function(i,j) comm.disp(tdmat,com1=spmat[i,],com2=spmat[j,])))
+  if(weighted==T){
+    nsp.comm<-rowSums(spmat>0)
+    disp.mat.weight<-diag(nsp.comm) %*% disp.mat %*% diag(nsp.comm)
+    return(disp.mat.weight)
+  } else {
+    return(disp.mat)
+  }
+}
 
+M.gamma.pw<-function(tdmat,spmat){
+  M.gamma<-function(tdmat,com1,com2){
+    c.ind<-c(which(com1>0),which(com2>0))
+    M.c<-mean(tdmat[c.ind,c.ind])/length(c.ind)^2
+    return(M.c)
+  }
+  n.comm<-nrow(spmat)
+  M.gamma.mat<-outer(1:n.comm,1:n.comm,function(i,j) M.gamma(tdmat,spmat[i,],spmat[j,]))
+  return(M.gamma.mat)
+}
+
+M.beta.pairwise<-function(tdmat,spmat,norm=F){
   nsp.comm<-rowSums(spmat>0)
-  disp.mat.weight<-diag(nsp.comm) %*% disp.mat %*% diag(nsp.comm)
+  n.comm<-nrow(spmat)
+  nsp.pair<-outer(1:n.comm,1:n.comm,function(i,j) nsp.comm[i]+nsp.comm[j])
+  disp.mat.weight<-comm.disp.mat(tdmat,spmat,weighted=T)
+  M.beta.pw<-2*disp.mat.weight/nsp.pair^2
+  if(norm==T){
+    M.beta.norm<-M.beta.pw/M.gamma.pw(tdmat,spmat)
+    return(M.beta.norm)
+  } else {
+    return(M.beta.pw)
+  }
+}
+
+FTD.beta<-function(tdmat,spmat,q=1){
+  n.comm<-nrow(spmat)
+  disp.mat.weight<-comm.disp.mat(tdmat,spmat,weighted=T)
   M.beta<-sum(disp.mat.weight)/sum(spmat>0)^2
   
   fAB<-disp.mat/sum(disp.mat)
