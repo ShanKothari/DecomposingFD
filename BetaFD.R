@@ -22,14 +22,14 @@ comm.disp.mat<-function(tdmat,spmat,weighted=FALSE){
   }
 }
 
-M.gamma.pw<-function(tdmat,spmat){
+M.gamma.pairwise<-function(tdmat,spmat){
   M.gamma<-function(tdmat,com1,com2){
     c.ind<-c(which(com1>0),which(com2>0))
-    M.c<-mean(tdmat[c.ind,c.ind])/length(c.ind)^2
+    M.c<-mean(tdmat[c.ind,c.ind])
     return(M.c)
   }
   n.comm<-nrow(spmat)
-  M.gamma.mat<-outer(1:n.comm,1:n.comm,function(i,j) M.gamma(tdmat,spmat[i,],spmat[j,]))
+  M.gamma.mat<-outer(1:n.comm,1:n.comm,FUN=Vectorize(function(i,j) M.gamma(tdmat,spmat[i,],spmat[j,])))
   return(M.gamma.mat)
 }
 
@@ -40,7 +40,7 @@ M.beta.pairwise<-function(tdmat,spmat,norm=F){
   disp.mat.weight<-comm.disp.mat(tdmat,spmat,weighted=T)
   M.beta.pw<-2*disp.mat.weight/nsp.pair^2
   if(norm==T){
-    M.beta.norm<-M.beta.pw/M.gamma.pw(tdmat,spmat)
+    M.beta.norm<-M.beta.pw/M.gamma.pairwise(tdmat,spmat)
     return(M.beta.norm)
   } else {
     return(M.beta.pw)
