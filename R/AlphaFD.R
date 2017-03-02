@@ -104,6 +104,7 @@ FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
     warning("at least one community has no species")
   }
   
+  nsp<-sum(colSums(spmat>0))
   ## calculate mean richness, dispersion, evenness, FTD
   u.M<-sum(df.out$nsp*df.out$M)/sum(df.out$nsp)
   u.nsp<-mean(df.out$nsp)
@@ -122,5 +123,5 @@ FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
   u.Et<-u.qDT/u.nsp
   
   ## list more things
-  list(com.FTD=df.out,u.nsp=u.nsp,u.M=u.M,u.M.prime=u.M.prime,u.Et=u.Et,u.qDT=u.qDT,u.qDTM=u.qDTM)
+  list(com.FTD=df.out,nsp=nsp,u.nsp=u.nsp,u.M=u.M,u.M.prime=u.M.prime,u.Et=u.Et,u.qDT=u.qDT,u.qDTM=u.qDTM)
 }
