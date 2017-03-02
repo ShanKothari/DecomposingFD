@@ -41,7 +41,7 @@ FTD<-function(tdmat,q=1,abund=F,weights=NULL){
     }
   }
   
-  if(all.equal(sum(weights),1)==F){
+  if(identical(sum(weights),1)==F){
     weights<-weights/sum(weights)
     warning("input proportional abundances do not sum to 1; summation to 1 forced")
   }
