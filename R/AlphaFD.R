@@ -13,7 +13,7 @@
 ## Hill coefficienct q
 ## weights are proportions of each species in each plot
 
-FTD<-function(tdmat,q=1,weights=NULL){
+FTD<-function(tdmat,weights=NULL,q=1){
   ## contingency for one-species communities
   if(length(tdmat)==1 && tdmat==0){
     tdmat<-as.matrix(tdmat)
@@ -78,6 +78,7 @@ FTD<-function(tdmat,q=1,weights=NULL){
 ## community data matrix (communities x species)
 ## with species in same order as distance matrix
 ## if abund=T, values in community data matrix are treated as abundances
+## otherwise, all are converted to presence-absence
 ## if match.names=T, the code will match species names across the
 ## trait distance matrix and comm data matrix and rearrange the latter
 
@@ -93,15 +94,8 @@ FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
     spmat<-spmat[,sp.arr]
   }
   
-  select.FTD<-function(tdmat,spvec,q){
-    tdmat.comm<-as.matrix(tdmat)
-    output<-FTD(tdmat=tdmat.comm,q=q,weights=spvec)
-    output<-unlist(output)
-    return(output)
-  }
-  
-  ## apply select.FTD to each community in turn
-  out<-apply(spmat,1,function(x) select.FTD(tdmat=tdmat,spvec=x,q=q))
+  ## apply FTD to each community in turn
+  out<-apply(spmat,1,function(x) unlist(FTD(tdmat=tdmat,weights=x,q=q)))
   df.out<-data.frame(t(out))
   rownames(df.out)<-rownames(spmat)
   ## warning for zero-species communities
