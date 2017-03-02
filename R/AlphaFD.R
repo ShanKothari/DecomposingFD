@@ -85,7 +85,8 @@ FTD<-function(tdmat,weights=NULL,q=1){
 FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
   
   if(abund==F){
-    spmat<- spmat>0
+    spmat[spmat>0]<- 1
+    spmat<-spmat/rowSums(spmat)
   }
   
   n.comm<-nrow(spmat)
