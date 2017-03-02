@@ -13,7 +13,7 @@
 ## Hill coefficienct q
 ## weights are proportions of each species in each plot
 
-FTD<-function(tdmat,q=1,abund=F,weights=NULL){
+FTD<-function(tdmat,q=1,weights=NULL){
   ## contingency for one-species communities
   if(length(tdmat)==1 && tdmat==0){
     tdmat<-as.matrix(tdmat)
@@ -32,13 +32,12 @@ FTD<-function(tdmat,q=1,abund=F,weights=NULL){
     warning("trait distances must be between 0 and 1; rescaling")
   }
   
-  nsp<-nrow(tdmat)
-  ## if abund=T but no weights are provided, abundances are assumed equal
+  ## if no weights are provided, abundances are assumed equal
   if(is.null(weights)){
+    nsp<-nrow(tdmat)
     weights<-rep(1/nsp,nsp)
-    if(abund==T){
-      warning("no weights provided; weights assumed equal")
-    }
+  } else {
+    nsp<-sum(weights>0)
   }
   
   if(identical(sum(weights),1)==F){
@@ -46,14 +45,13 @@ FTD<-function(tdmat,q=1,abund=F,weights=NULL){
     warning("input proportional abundances do not sum to 1; summation to 1 forced")
   }
   
-  ## if abund=F, tdmat.abund=dij
-  ## if abund=T, tdmat.abund is weighted by proportional abundance of i and j
-  tdmat.abund<-diag(weights^abund) %*% tdmat %*% diag(weights^abund)
-  dijsum<-sum(tdmat.abund)
-  ## calculates Scheiner's M (if abund=F) or Rao's Q (if abund=T)
-  M<-dijsum/nsp^(2*(1-abund))
+  tdmat.abund<-diag(weights) %*% tdmat %*% diag(weights)
+  ## Here, because sum(weights)=1, the sum is here already adjusted by dividing by the 
+  ## square of the number of species (if weights=NULL)
+  ## or by multiplying by proportional abundances (Rao's Q)
+  M<-sum(tdmat.abund)
   M.prime<-M*nsp/(nsp-1)
-  fij<-tdmat.abund/dijsum
+  fij<-tdmat.abund/M
   
   ## calculating qH
   ## fork -- if q=1, 1/(1-q) is undefined, so we use an analogue
@@ -85,24 +83,25 @@ FTD<-function(tdmat,q=1,abund=F,weights=NULL){
 
 FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
   
+  if(abund==F){
+    spmat<- spmat>0
+  }
+  
   n.comm<-nrow(spmat)
   if(match.names==T){
     sp.arr<-match(rownames(as.matrix(tdmat)),colnames(spmat))
     spmat<-spmat[,sp.arr]
   }
   
-  ## define an internal function to apply FTD to a subsetted distance matrix
-  select.FTD<-function(tdmat,spvec,q,abund){
-    sp<-which(as.logical(spvec))
-    tdmat.comm<-as.matrix(tdmat)[sp,sp]
-    ## automatically converts abundances to proportions
-    output<-FTD(tdmat=tdmat.comm,q=q,abund=abund,weights=as.numeric(spvec[sp])/sum(spvec[sp]))
+  select.FTD<-function(tdmat,spvec,q){
+    tdmat.comm<-as.matrix(tdmat)
+    output<-FTD(tdmat=tdmat.comm,q=q,weights=spvec)
     output<-unlist(output)
     return(output)
   }
   
   ## apply select.FTD to each community in turn
-  out<-apply(spmat,1,function(x) select.FTD(tdmat=tdmat,spvec=x,q=q,abund=abund))
+  out<-apply(spmat,1,function(x) select.FTD(tdmat=tdmat,spvec=x,q=q))
   df.out<-data.frame(t(out))
   rownames(df.out)<-rownames(spmat)
   ## warning for zero-species communities
@@ -130,7 +129,3 @@ FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
   ## list more things
   list(com.FTD=df.out,u.nsp=u.nsp,u.M=u.M,u.M.prime=u.M.prime,u.Et=u.Et,u.qDT=u.qDT,u.qDTM=u.qDTM)
 }
-
-## to consider:
-## change to output standardized M rather than normal
-## structured vs. unstructured gamma-diversity
