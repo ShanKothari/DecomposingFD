@@ -32,9 +32,10 @@ FTD<-function(tdmat,q=1,abund=F,weights=NULL){
     warning("trait distances must be between 0 and 1; rescaling")
   }
   
+  nsp<-nrow(tdmat)
   ## if abund=T but no weights are provided, abundances are assumed equal
   if(is.null(weights)){
-    weights<-rep(1/nrow(tdmat),nrow(tdmat))
+    weights<-rep(1/nsp,nsp)
     if(abund==T){
       warning("no weights provided; weights assumed equal")
     }
@@ -45,7 +46,6 @@ FTD<-function(tdmat,q=1,abund=F,weights=NULL){
     warning("input proportional abundances do not sum to 1; summation to 1 forced")
   }
   
-  nsp<-nrow(tdmat)
   ## if abund=F, tdmat.abund=dij
   ## if abund=T, tdmat.abund is weighted by proportional abundance of i and j
   tdmat.abund<-diag(weights^abund) %*% tdmat %*% diag(weights^abund)
@@ -72,7 +72,7 @@ FTD<-function(tdmat,q=1,abund=F,weights=NULL){
   qDTM<-1+qDT*M
   Et<-qDT/nsp
   
-  list(nsp=nsp,q=q,M.prime=M.prime,Ht=Ht,Et=Et,qDT=qDT,qDTM=qDTM)
+  list(nsp=nsp,q=q,M=M,M.prime=M.prime,Ht=Ht,Et=Et,qDT=qDT,qDTM=qDTM)
 }
 
 ## wrapper for the above function across multiple communities
@@ -128,7 +128,7 @@ FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
   u.Et<-u.qDT/u.nsp
   
   ## list more things
-  list(com.FTD=df.out,u.nsp=u.nsp,u.M.prime=u.M.prime,u.Et=u.Et,u.qDT=u.qDT,u.qDTM=u.qDTM)
+  list(com.FTD=df.out,u.nsp=u.nsp,u.M=u.M,u.M.prime=u.M.prime,u.Et=u.Et,u.qDT=u.qDT,u.qDTM=u.qDTM)
 }
 
 ## to consider:
