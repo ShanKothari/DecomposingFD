@@ -17,7 +17,7 @@ comm.disp<-function(tdmat,com1,com2){
   return(dmAB)
 }
 
-## adjust to allow abundance-weighting
+
 comm.disp.mat<-function(tdmat,spmat,abund=F,sp.weighted=FALSE){
   n.comm<-nrow(spmat)
   
@@ -42,13 +42,22 @@ comm.disp.mat<-function(tdmat,spmat,abund=F,sp.weighted=FALSE){
   }
 }
 
-## make abundance-weighted
-M.gamma.pairwise<-function(tdmat,spmat){
+M.gamma.pairwise<-function(tdmat,spmat,abund=F){
+  
+  if(abund==F){
+    spmat[spmat>0]<- 1
+    spmat<-spmat/rowSums(spmat)
+  }
+  
   M.gamma<-function(tdmat,com1,com2){
+    nsp1<-sum(com1>0)
+    nsp2<-sum(com2>0)
     c.ind<-c(which(com1>0),which(com2>0))
-    M.c<-mean(tdmat[c.ind,c.ind])
+    c.abund<-c(com1[which(com1>0)]*nsp1,com2[which(com2>0)]*nsp2)/(nsp1+nsp2)
+    M.c<-sum(c.abund %*% tdmat[c.ind,c.ind] %*% c.abund)
     return(M.c)
   }
+  
   n.comm<-nrow(spmat)
   M.gamma.mat<-outer(1:n.comm,1:n.comm,FUN=Vectorize(function(i,j) M.gamma(tdmat,spmat[i,],spmat[j,])))
   return(M.gamma.mat)
@@ -61,15 +70,13 @@ M.beta.pairwise<-function(tdmat,spmat,abund=F,norm=F){
   disp.mat.weight<-comm.disp.mat(tdmat,spmat,abund=abund,sp.weighted=T)
   M.beta.mat<-2*disp.mat.weight/nsp.pair^2
   if(norm==T){
-    ## allow M.gamma.pairwise to be abund weighted if abund=T
-    M.beta.norm<-M.beta.mat/M.gamma.pairwise(tdmat,spmat)
+    M.beta.norm<-M.beta.mat/M.gamma.pairwise(tdmat,abund=abund,spmat)
     return(M.beta.norm)
   } else {
     return(M.beta.mat)
   }
 }
 
-## make abundance-weighted
 FTD.beta<-function(tdmat,spmat,abund=F,q=1){
   nsp<-sum(colSums(spmat>0))
   n.comm<-nrow(spmat)
@@ -77,7 +84,7 @@ FTD.beta<-function(tdmat,spmat,abund=F,q=1){
   M.beta<-sum(disp.mat.weight)/sum(spmat>0)^2
   M.beta.prime<-M.beta*n.comm/(n.comm-1)
   
-  fAB<-disp.mat/sum(disp.mat)
+  fAB<-disp.mat.weight/sum(disp.mat.weight)
   if(q==1){
     fABlog<-fAB*log(fAB)
     fABlog[is.na(fABlog)]<-0
