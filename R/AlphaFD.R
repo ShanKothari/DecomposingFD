@@ -21,7 +21,7 @@ FTD<-function(tdmat,weights=NULL,q=1){
   ## is the input a matrix or dist? if not...
   if(!(class(tdmat) %in% c("matrix","dist"))){
     stop("distances must be class dist or class matrix")
-  } else if(class(tdmat)=="matrix" && !isSymmetric(tdmat)){
+  } else if(class(tdmat)=="matrix" && !isSymmetric(unname(tdmat))){
     warning("matrix not symmetric")
   } else if(class(tdmat)=="dist"){
     tdmat<-as.matrix(tdmat)
