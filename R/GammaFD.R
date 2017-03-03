@@ -36,6 +36,8 @@ FTD.gamma.str<-function(tdmat,spmat,abund=F,q=1){
     fijlog<-fij*log(fij)
     fijlog[is.na(fijlog)]<-0
     Ht.gamma<-exp(-1*sum(fijlog))
+  } else if(q==0){
+    Ht.gamma<-sum(fij>0)
   } else {
     Ht.gamma<-sum(fij^q)^(1/(1-q))
   }

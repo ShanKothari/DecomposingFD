@@ -103,6 +103,8 @@ FTD.beta<-function(tdmat,spmat,abund=F,q=1){
     fABlog<-fAB*log(fAB)
     fABlog[is.na(fABlog)]<-0
     Ht.beta<-exp(-1*sum(fABlog))
+  } else if(q==0){
+    Ht.beta<-sum(fAB>0)
   } else {
     Ht.beta<-sum(fAB^q)^(1/(1-q))
   }
