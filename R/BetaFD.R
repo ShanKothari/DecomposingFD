@@ -110,5 +110,5 @@ FTD.beta<-function(tdmat,spmat,abund=F,q=1){
   qDTM.beta<-1+qDT.beta*M.beta
   Et.beta<-qDT.beta/n.comm
   
-  list(nsp=nsp,St=St,n.comm=n.comm,q=q,M.beta.prime=M.beta.prime,Ht.beta=Ht.beta,qDT.beta=qDT.beta,qDTM.beta=qDTM.beta,disp.mat.weight=disp.mat.weight)
+  list(nsp=nsp,St=St,n.comm=n.comm,q=q,M.beta=M.beta,M.beta.prime=M.beta.prime,Ht.beta=Ht.beta,qDT.beta=qDT.beta,qDTM.beta=qDTM.beta,disp.mat.weight=disp.mat.weight)
 }
