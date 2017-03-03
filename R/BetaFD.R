@@ -90,8 +90,10 @@ M.beta.pairwise<-function(tdmat,spmat,abund=F,norm=F){
 }
 
 FTD.beta<-function(tdmat,spmat,abund=F,q=1){
-  nsp<-sum(colSums(spmat>0))
+  nsp<-sum(colSums(spmat)>0)
+  St<-sum(spmat>0)
   n.comm<-nrow(spmat)
+  
   disp.mat.weight<-comm.disp.mat(tdmat,spmat,abund=abund,sp.weighted=T)
   M.beta<-sum(disp.mat.weight)/sum(spmat>0)^2
   M.beta.prime<-M.beta*n.comm/(n.comm-1)
@@ -108,5 +110,5 @@ FTD.beta<-function(tdmat,spmat,abund=F,q=1){
   qDTM.beta<-1+qDT.beta*M.beta
   Et.beta<-qDT.beta/n.comm
   
-  list(nsp=nsp,n.comm=n.comm,q=q,M.beta.prime=M.beta.prime,Ht.beta=Ht.beta,qDT.beta=qDT.beta,qDTM.beta=qDTM.beta,disp.mat.weight=disp.mat.weight)
+  list(nsp=nsp,St=St,n.comm=n.comm,q=q,M.beta.prime=M.beta.prime,Ht.beta=Ht.beta,qDT.beta=qDT.beta,qDTM.beta=qDTM.beta,disp.mat.weight=disp.mat.weight)
 }
