@@ -61,6 +61,8 @@ FTD<-function(tdmat,weights=NULL,q=1){
     fijlog<-fij*log(fij)
     fijlog[is.na(fijlog)]<-0
     Ht<-exp(-1*sum(fijlog))
+  } else if(q==0){
+    Ht<-sum(fij>0)
   } else {
     Ht<-sum(fij^q)^(1/(1-q))
   }

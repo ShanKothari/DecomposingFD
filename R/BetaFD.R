@@ -95,7 +95,7 @@ FTD.beta<-function(tdmat,spmat,abund=F,q=1){
   n.comm<-nrow(spmat)
   
   disp.mat.weight<-comm.disp.mat(tdmat,spmat,abund=abund,sp.weighted=T)
-  M.beta<-sum(disp.mat.weight)/sum(spmat>0)^2
+  M.beta<-sum(disp.mat.weight)/St^2
   M.beta.prime<-M.beta*n.comm/(n.comm-1)
   
   fAB<-disp.mat.weight/sum(disp.mat.weight)
