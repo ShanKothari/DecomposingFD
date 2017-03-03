@@ -44,5 +44,5 @@ FTD.gamma.str<-function(tdmat,spmat,abund=F,q=1){
   qDTM.gamma<-1+qDT.gamma*M.gamma
   Et.gamma<-qDT.gamma/St
   
-  list(St=St,M.gamma=M.gamma,Ht.gamma=Ht.gamma,Et.gamma=Et.gamma,qDT.gamma=qDT.gamma,qDTM.gamma=qDTM.gamma)
+  list(St=St,M.gamma=M.gamma,M.gamma.prime=M.gamma.prime,Ht.gamma=Ht.gamma,Et.gamma=Et.gamma,qDT.gamma=qDT.gamma,qDTM.gamma=qDTM.gamma)
 }
