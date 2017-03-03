@@ -114,7 +114,7 @@ FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
     u.qDT<-prod(df.out$qDT)^(1/n.comm)
   } else {
     ## generalized mean with m=1-q
-    u.qDT<-(sum(df.out$qDT^(1-q))/n.comm)^1/(1-q)
+    u.qDT<-(sum(df.out$qDT^(1-q))/n.comm)^(1/(1-q))
   }
   u.M.prime<-u.M*u.nsp/(u.nsp-1)
   
