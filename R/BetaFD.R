@@ -2,7 +2,7 @@
 ## based on presence/absence
 comm.disp<-function(tdmat,com1,com2){
   
-  if(identical(sum(com1),1)==F | identical(sum(com2),1)==F){
+  if(identical(sum(com1),1)==F || identical(sum(com2),1)==F){
     com1<-com1/sum(com1)
     com2<-com2/sum(com2)
     warning("input proportional abundances do not sum to 1; summation to 1 forced")
@@ -59,6 +59,10 @@ M.gamma.pairwise<-function(tdmat,spmat,abund=F){
     nsp1<-sum(com1>0)
     nsp2<-sum(com2>0)
     c.ind<-c(which(com1>0),which(com2>0))
+    ## is this the correct abundance-weighted M.gamma?
+    ## or should proportional abundances in less speciose communities count for more?
+    ## alternative:
+    ## c.abund<-c(com1[which(com1>0)],com2[which(com2>0)])/2
     c.abund<-c(com1[which(com1>0)]*nsp1,com2[which(com2>0)]*nsp2)/(nsp1+nsp2)
     M.c<-sum(c.abund %*% tdmat[c.ind,c.ind] %*% c.abund)
     return(M.c)
