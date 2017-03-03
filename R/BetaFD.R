@@ -49,6 +49,12 @@ M.gamma.pairwise<-function(tdmat,spmat,abund=F){
     spmat<-spmat/rowSums(spmat)
   }
   
+  ## if any row doesn't sum to 1, coerce summation
+  if(FALSE %in% sapply(rowSums(spmat),function(x) identical(x,1))){
+    spmat<-spmat/rowSums(spmat)
+    warning("proportional abundances don't always sum to 1; summation to 1 forced")
+  }
+  
   M.gamma<-function(tdmat,com1,com2){
     nsp1<-sum(com1>0)
     nsp2<-sum(com2>0)
@@ -68,9 +74,11 @@ M.beta.pairwise<-function(tdmat,spmat,abund=F,norm=F){
   n.comm<-nrow(spmat)
   nsp.pair<-outer(1:n.comm,1:n.comm,function(i,j) nsp.comm[i]+nsp.comm[j])
   disp.mat.weight<-comm.disp.mat(tdmat,spmat,abund=abund,sp.weighted=T)
+  ## factor of 2 to include distance from A to B and B to A
   M.beta.mat<-2*disp.mat.weight/nsp.pair^2
   if(norm==T){
     M.beta.norm<-M.beta.mat/M.gamma.pairwise(tdmat,abund=abund,spmat)
+    M.beta.norm[is.na(M.beta.norm)]<-0
     return(M.beta.norm)
   } else {
     return(M.beta.mat)
@@ -96,5 +104,5 @@ FTD.beta<-function(tdmat,spmat,abund=F,q=1){
   qDTM.beta<-1+qDT.beta*M.beta
   Et.beta<-qDT.beta/n.comm
   
-  list(nsp=nsp,n.comm=n.comm,q=q,M.beta.prime=M.beta.prime,Ht.beta=Ht.beta,qDT.beta=qDT.beta,qDTM.beta=qDTM.beta,disp.mat=disp.mat)
+  list(nsp=nsp,n.comm=n.comm,q=q,M.beta.prime=M.beta.prime,Ht.beta=Ht.beta,qDT.beta=qDT.beta,qDTM.beta=qDTM.beta,disp.mat.weight=disp.mat.weight)
 }
