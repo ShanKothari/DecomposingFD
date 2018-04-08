@@ -53,26 +53,26 @@ FTD<-function(tdmat,weights=NULL,q=1){
   M.prime<-M*nsp/(nsp-1)
   fij<-tdmat.abund/M
   
-  ## calculating qH
+  ## calculating qHt
   ## fork -- if q=1, 1/(1-q) is undefined, so we use an analogue
   ## of the formula for Shannon-Weiner diversity
   ## if q!=1, we can calculate explicitly
   if(q==1){
     fijlog<-fij*log(fij)
     fijlog[is.na(fijlog)]<-0
-    Ht<-exp(-1*sum(fijlog))
+    qHt<-exp(-1*sum(fijlog))
   } else if(q==0){
-    Ht<-sum(fij>0)
+    qHt<-sum(fij>0)
   } else {
-    Ht<-sum(fij^q)^(1/(1-q))
+    qHt<-sum(fij^q)^(1/(1-q))
   }
   
-  ## getting qDT, qDTM, and Et from Ht
-  qDT<-(1+sqrt(1+4*Ht))/2
+  ## getting qDT, qDTM, and qEt from qHt
+  qDT<-(1+sqrt(1+4*qHt))/2
   qDTM<-1+qDT*M
-  Et<-qDT/nsp
+  qEt<-qDT/nsp
   
-  list(nsp=nsp,q=q,M=M,M.prime=M.prime,Ht=Ht,Et=Et,qDT=qDT,qDTM=qDTM)
+  list(nsp=nsp,q=q,M=M,M.prime=M.prime,qHt=qHt,qEt=qEt,qDT=qDT,qDTM=qDTM)
 }
 
 ## wrapper for the above function across multiple communities
@@ -122,8 +122,8 @@ FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
   
   ## calculate mean FTD and evenness
   u.qDTM<-1+u.qDT*u.M
-  u.Et<-u.qDT/u.nsp
+  u.qEt<-u.qDT/u.nsp
   
   ## list more things
-  list(com.FTD=df.out,nsp=nsp,u.nsp=u.nsp,u.M=u.M,u.M.prime=u.M.prime,u.Et=u.Et,u.qDT=u.qDT,u.qDTM=u.qDTM)
+  list(com.FTD=df.out,nsp=nsp,u.nsp=u.nsp,u.M=u.M,u.M.prime=u.M.prime,u.qEt=u.qEt,u.qDT=u.qDT,u.qDTM=u.qDTM)
 }
