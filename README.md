@@ -13,7 +13,9 @@ Currently, the best way to use these scripts are to download them (or clone the 
 
 AlphaFD.R contains two functions -- FTD, which calculates functional trait dispersion for a single community based on its species and their traits, and FTD.comm, which wraps FTD across a set of communities. Each function also calculates how FTD is decomposed into species richness, functional evenness, and functional dispersion. FTD is measured as the effective number of species that are as functionally distinct as the maximally distinct species in the data set. It can also be weighted by abundance. Importantly, to compare FTD values for two communities, they must be treated as arising from the same species pool, since the identity of the maximally distinct pair of species varies based on the species pool.
 
-BetaFD.R contains two functions -- comm.disp, which calculates the mean distance between two communities, and FTD.beta, which uses comm.disp to calculate the beta FTD of a set of communities, as well as its decomposition into number of communities, evenness of community dispersion, and mean dispersion among communities. FTD.beta is measured as the effective number of communities that are as functionally distinct as the maximally distinct communities possible. Currently, it cannot be weighted by abundance.
+BetaFD.R contains two functions -- comm.disp, which calculates the mean distance between two communities, and FTD.beta, which uses comm.disp to calculate the beta FTD of a set of communities, as well as its decomposition into number of communities, evenness of community dispersion, and mean dispersion among communities. FTD.beta is measured as the effective number of communities that are as functionally distinct as the maximally distinct communities possible.
+
+GammaFD.R contains code in progress to calculate unstructured functional gamma diversity.
 
 ## Literature reference
 
