@@ -10,21 +10,27 @@
 ## FTD requires:
 ## matrix or dist containing species functional distances (tdmat)
 ## tdmat should be rescaled to 0<=dij<=1
-## Hill coefficienct q
+## Hill coefficient q
 ## weights are proportions of each species in each plot
 
 FTD<-function(tdmat,weights=NULL,q=1){
+  
   ## contingency for one-species communities
   if(length(tdmat)==1 && tdmat==0){
     tdmat<-as.matrix(tdmat)
   }
+  
   ## is the input a matrix or dist? if not...
   if(!(class(tdmat) %in% c("matrix","dist"))){
     stop("distances must be class dist or class matrix")
   } else if(class(tdmat)=="matrix" && !isSymmetric(unname(tdmat))){
-    warning("matrix not symmetric")
+    warning("trait matrix not symmetric")
   } else if(class(tdmat)=="dist"){
     tdmat<-as.matrix(tdmat)
+  }
+  
+  if(!isTRUE(all.equal(sum(diag(tdmat)),0))){
+    warning("non-zero diagonal; species appear to have non-zero trait distance from themselves")
   }
   
   if(max(tdmat)>1 || min(tdmat)<0){
@@ -40,7 +46,7 @@ FTD<-function(tdmat,weights=NULL,q=1){
     nsp<-sum(weights>0)
   }
   
-  if(identical(sum(weights),1)==F){
+  if(!isTRUE(all.equal(sum(weights),1))){
     weights<-weights/sum(weights)
     warning("input proportional abundances do not sum to 1; summation to 1 forced")
   }
@@ -48,16 +54,20 @@ FTD<-function(tdmat,weights=NULL,q=1){
   tdmat.abund<-diag(weights) %*% tdmat %*% diag(weights)
   ## Here, because sum(weights)=1, the sum is here already adjusted by dividing by the 
   ## square of the number of species (if weights=NULL)
-  ## or by multiplying by proportional abundances (Rao's Q)
+  ## or by multiplying by proportional abundances
   M<-sum(tdmat.abund)
-  M.prime<-M*nsp/(nsp-1)
+  ## M equals Rao's Q in abundance-weighted calculations
+  M.prime<-ifelse(nsp==1,0,M*nsp/(nsp-1))
   fij<-tdmat.abund/M
   
   ## calculating qHt
   ## fork -- if q=1, 1/(1-q) is undefined, so we use an analogue
   ## of the formula for Shannon-Weiner diversity
   ## if q!=1, we can calculate explicitly
-  if(q==1){
+  ## by definition, qHt=0 when all trait distances are zero
+  if(isTRUE(all.equal(M,0))){
+    qHt<-0
+  } else if(q==1){
     fijlog<-fij*log(fij)
     fijlog[is.na(fijlog)]<-0
     qHt<-exp(-1*sum(fijlog))
