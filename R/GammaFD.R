@@ -11,7 +11,7 @@ FTD.gamma.str<-function(tdmat,spmat,abund=F,q=1){
   }
   
   ## if any row doesn't sum to 1, coerce summation
-  if(FALSE %in% sapply(rowSums(spmat),function(x) identical(x,1))){
+  if(FALSE %in% sapply(rowSums(spmat),function(x) isTRUE(all.equal(x,1)))){
     spmat<-spmat/rowSums(spmat)
     warning("proportional abundances don't always sum to 1; summation to 1 forced")
   }
@@ -32,7 +32,9 @@ FTD.gamma.str<-function(tdmat,spmat,abund=F,q=1){
   M.gamma.prime<-M.gamma*St/(St-1)
 
   fij<-td.norm/M.gamma
-  if(q==1){
+  if(isTRUE(all.equal(M.gamma,0))){
+    Ht.gamma<-0
+  } else if(q==1){
     fijlog<-fij*log(fij)
     fijlog[is.na(fijlog)]<-0
     Ht.gamma<-exp(-1*sum(fijlog))

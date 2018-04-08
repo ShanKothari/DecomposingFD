@@ -27,7 +27,7 @@ comm.disp.mat<-function(tdmat,spmat,abund=F,sp.weighted=FALSE){
   }
   
   ## if any row doesn't sum to 1, coerce summation
-  if(FALSE %in% sapply(rowSums(spmat),function(x) identical(x,1))){
+  if(FALSE %in% sapply(rowSums(spmat),function(x) isTRUE(all.equal(x,1)))){
     spmat<-spmat/rowSums(spmat)
     warning("proportional abundances don't always sum to 1; summation to 1 forced")
   }
