@@ -1,5 +1,5 @@
 ## measuring the dispersion between two communities
-## based on presence/absence
+
 comm.disp<-function(tdmat,com1,com2){
   
   if(isTRUE(all.equal(sum(com1),1))==F || isTRUE(all.equal(sum(com2),1))==F){
