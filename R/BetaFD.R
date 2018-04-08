@@ -2,7 +2,7 @@
 ## based on presence/absence
 comm.disp<-function(tdmat,com1,com2){
   
-  if(identical(sum(com1),1)==F || identical(sum(com2),1)==F){
+  if(isTRUE(all.equal(sum(com1),1))==F || isTRUE(all.equal(sum(com2),1))==F){
     com1<-com1/sum(com1)
     com2<-com2/sum(com2)
     warning("input proportional abundances do not sum to 1; summation to 1 forced")
@@ -50,7 +50,7 @@ M.gamma.pairwise<-function(tdmat,spmat,abund=F){
   }
   
   ## if any row doesn't sum to 1, coerce summation
-  if(FALSE %in% sapply(rowSums(spmat),function(x) identical(x,1))){
+  if(FALSE %in% sapply(rowSums(spmat),function(x) isTRUE(all.equal(x,1)))){
     spmat<-spmat/rowSums(spmat)
     warning("proportional abundances don't always sum to 1; summation to 1 forced")
   }
@@ -99,7 +99,9 @@ FTD.beta<-function(tdmat,spmat,abund=F,q=1){
   M.beta.prime<-M.beta*n.comm/(n.comm-1)
   
   fAB<-disp.mat.weight/sum(disp.mat.weight)
-  if(q==1){
+  if(isTRUE(all.equal(sum(disp.mat.weight),0))){
+    Ht.beta<-0
+  } else if(q==1){
     fABlog<-fAB*log(fAB)
     fABlog[is.na(fABlog)]<-0
     Ht.beta<-exp(-1*sum(fABlog))
