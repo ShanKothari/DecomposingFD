@@ -117,10 +117,10 @@ FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
   }
   
   nsp<-sum(colSums(spmat>0))
+  ## this is Sw -- always an arithmetic mean, according to Evsey Kosman
+  u.nsp<-mean(df.out$nsp)
   ## calculate mean richness, dispersion, evenness, FTD
   u.M<-sum(df.out$nsp*df.out$M)/sum(df.out$nsp)
-  u.nsp<-mean(df.out$nsp)
-  ## to do: check if u.nsp is always calculated as arithmetic mean
   if(q==1){
     ## geometric mean -- limit of generalized mean as q->1
     u.qDT<-prod(df.out$qDT)^(1/n.comm)
