@@ -32,7 +32,7 @@ FTD.gamma.str<-function(tdmat,spmat,abund=F,q=1){
   ## is this the correct formula for weights?
   ## or should proportional abundances in less speciose communities count for more?
   ## alternative:
-  ## weights<-spmat[which(spmat>0)]/n.comm
+  ## weights<-spmat[which(spmat>0,arr.ind=T)]/n.comm
   spmat.sp<-spmat*nsp.comm
   weights<-spmat.sp[which(spmat.sp>0,arr.ind=T)]/St
   

@@ -121,6 +121,7 @@ FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
   u.nsp<-mean(df.out$nsp)
   ## calculate mean richness, dispersion, evenness, FTD
   u.M<-sum(df.out$nsp*df.out$M)/sum(df.out$nsp)
+  
   if(q==1){
     ## geometric mean -- limit of generalized mean as q->1
     u.qDT<-prod(df.out$qDT)^(1/n.comm)
