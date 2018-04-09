@@ -2,6 +2,15 @@
 
 comm.disp<-function(tdmat,com1,com2){
   
+  ## is the input a matrix or dist? if not...
+  if(!(class(tdmat) %in% c("matrix","dist"))){
+    stop("distances must be class dist or class matrix")
+  } else if(class(tdmat)=="matrix" && !isSymmetric(unname(tdmat))){
+    warning("trait matrix not symmetric")
+  } else if(class(tdmat)=="dist"){
+    tdmat<-as.matrix(tdmat)
+  }
+  
   if(isTRUE(all.equal(sum(com1),1))==F || isTRUE(all.equal(sum(com2),1))==F){
     com1<-com1/sum(com1)
     com2<-com2/sum(com2)
