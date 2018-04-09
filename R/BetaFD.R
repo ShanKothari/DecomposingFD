@@ -71,8 +71,8 @@ M.gamma.pairwise<-function(tdmat,spmat,abund=F){
     ## is this the correct abundance-weighted M.gamma?
     ## or should proportional abundances in less speciose communities count for more?
     ## alternative:
-    ## c.abund<-c(com1[which(com1>0)],com2[which(com2>0)])/2
-    c.abund<-c(com1[which(com1>0)]*nsp1,com2[which(com2>0)]*nsp2)/(nsp1+nsp2)
+    ## c.abund<-unlist(c(com1[which(com1>0)],com2[which(com2>0)]))/2
+    c.abund<-unlist(c(com1[which(com1>0)]*nsp1,com2[which(com2>0)]*nsp2))/(nsp1+nsp2)
     M.c<-sum(c.abund %*% tdmat[c.ind,c.ind] %*% c.abund)
     return(M.c)
   }
