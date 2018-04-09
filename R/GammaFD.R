@@ -1,6 +1,16 @@
 ## calculating structured gamma diversity
 ## currently non-functional
 FTD.gamma.str<-function(tdmat,spmat,abund=F,q=1){
+
+  ## is the input a matrix or dist? if not...
+  if(!(class(tdmat) %in% c("matrix","dist"))){
+    stop("distances must be class dist or class matrix")
+  } else if(class(tdmat)=="matrix" && !isSymmetric(unname(tdmat))){
+    warning("trait matrix not symmetric")
+  } else if(class(tdmat)=="dist"){
+    tdmat<-as.matrix(tdmat)
+  }
+  
   St<-sum(spmat>0)
   nsp.comm<-rowSums(spmat>0)
   n.comm<-nrow(spmat)
@@ -24,7 +34,7 @@ FTD.gamma.str<-function(tdmat,spmat,abund=F,q=1){
   ## alternative:
   ## weights<-spmat[which(spmat>0)]/n.comm
   spmat.sp<-spmat*nsp.comm
-  weights<-spmat.sp[which(spmat.sp>0)]/St
+  weights<-spmat.sp[which(spmat.sp>0,arr.ind=T)]/St
   
   td.norm<-diag(weights) %*% td.sp %*% diag(weights)
   
