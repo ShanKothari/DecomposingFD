@@ -1,5 +1,5 @@
 ## calculating structured gamma diversity
-## currently non-functional
+
 FTD.gamma.str<-function(tdmat,spmat,abund=F,q=1){
 
   ## is the input a matrix or dist? if not...
