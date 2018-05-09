@@ -20,7 +20,7 @@ FTD<-function(tdmat,weights=NULL,q=1){
     tdmat<-as.matrix(tdmat)
   }
   
-  ## is the input a matrix or dist? if not...
+  ## is the input a (symmetric) matrix or dist? if not...
   if(!(class(tdmat) %in% c("matrix","dist"))){
     stop("distances must be class dist or class matrix")
   } else if(class(tdmat)=="matrix" && !isSymmetric(unname(tdmat))){
@@ -95,6 +95,24 @@ FTD<-function(tdmat,weights=NULL,q=1){
 ## trait distance matrix and comm data matrix and rearrange the latter
 
 FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
+  
+  ## is the input a (symmetric) matrix or dist? if not...
+  if(!(class(tdmat) %in% c("matrix","dist"))){
+    stop("distances must be class dist or class matrix")
+  } else if(class(tdmat)=="matrix" && !isSymmetric(unname(tdmat))){
+    warning("trait matrix not symmetric")
+  } else if(class(tdmat)=="dist"){
+    tdmat<-as.matrix(tdmat)
+  }
+  
+  if(!isTRUE(all.equal(sum(diag(tdmat)),0))){
+    warning("non-zero diagonal; species appear to have non-zero trait distance from themselves")
+  }
+  
+  if(max(tdmat)>1 || min(tdmat)<0){
+    tdmat<-(tdmat-min(tdmat))/(max(tdmat)-min(tdmat))
+    warning("trait distances must be between 0 and 1; rescaling")
+  }
   
   if(abund==F){
     spmat[spmat>0]<- 1
