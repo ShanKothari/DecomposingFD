@@ -21,11 +21,11 @@ FTD<-function(tdmat,weights=NULL,q=1){
   }
   
   ## is the input a (symmetric) matrix or dist? if not...
-  if(!(class(tdmat) %in% c("matrix","dist"))){
+  if(sum(class(tdmat) %in% c("matrix","dist"))<1){
     stop("distances must be class dist or class matrix")
-  } else if(class(tdmat)=="matrix" && !isSymmetric(unname(tdmat))){
+  } else if(sum(class(tdmat)=="matrix")>0 && !isSymmetric(unname(tdmat))){
     warning("trait matrix not symmetric")
-  } else if(class(tdmat)=="dist"){
+  } else if(sum(class(tdmat)=="dist")>0){
     tdmat<-as.matrix(tdmat)
   }
   
@@ -97,11 +97,11 @@ FTD<-function(tdmat,weights=NULL,q=1){
 FTD.comm<-function(tdmat,spmat,q=1,abund=F,match.names=F){
   
   ## is the input a (symmetric) matrix or dist? if not...
-  if(!(class(tdmat) %in% c("matrix","dist"))){
+  if(sum(class(tdmat) %in% c("matrix","dist"))<1){
     stop("distances must be class dist or class matrix")
-  } else if(class(tdmat)=="matrix" && !isSymmetric(unname(tdmat))){
+  } else if(sum(class(tdmat)=="matrix")>0 && !isSymmetric(unname(tdmat))){
     warning("trait matrix not symmetric")
-  } else if(class(tdmat)=="dist"){
+  } else if(sum(class(tdmat)=="dist")>0){
     tdmat<-as.matrix(tdmat)
   }
   
